@@ -22,7 +22,8 @@ fluidPage(
                      tabPanel("Palavras Positivas", plotOutput("plotPalavrasPositivas")),                     
                      tabPanel("Palavras Negativas", plotOutput("plotPalavrasNegativas")),
                      tabPanel("Palavras Neutras", plotOutput("plotPalavrasNeutras")),
-                     tabPanel("Nuvem de Palavras", plotOutput("plotNuvem"))
+                     tabPanel("Nuvem de Palavras", plotOutput("plotNuvem")),
+                     tabPanel("Gênero da Audiência", plotOutput("plotGenero"))
          )
       )
    )

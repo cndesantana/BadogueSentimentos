@@ -26,7 +26,7 @@ function(input, output) {
    # functions defined below then all use the value computed from
    # this expression
    observeEvent(input$do, {
-      resultsdir <- file.path(workdir,paste("results_",format(Sys.Date(), "%Y%m%d"),sep=""));
+      resultsdir <- file.path(input$workdir,paste("results_",format(Sys.Date(), "%Y%m%d"),sep=""));
       if(!file.exists(resultsdir))
          dir.create(resultsdir)
       
@@ -39,7 +39,6 @@ function(input, output) {
       incProgress(1/7, detail = "Plotando todas as palavras...")
 
       allmessages<-""
-      filepath <- input$file$datapath
       file <- read_xlsx(filepath)
       allmessages <- toupper(file$Conteúdo)
          
@@ -70,7 +69,7 @@ function(input, output) {
       allmessages <- toupper(file$Conteúdo)[positivas]
       
       stblUnigrm <- fromCommentsToUnigram(allmessages)
-      top20unig<-stblUnigrm[1:15,]
+      top20unig<-stblUnigrm[1:20,]
       colnames(top20unig)<-c("UniGram","Frequency")
       p <- ggplot (top20unig, aes(x = reorder(UniGram, Frequency), y= Frequency )) + 
          geom_bar( stat = "Identity" , fill = "green" ) +  
@@ -94,7 +93,7 @@ function(input, output) {
       allmessages <- toupper(file$Conteúdo)[neutras]
       
       stblUnigrm <- fromCommentsToUnigram(allmessages)
-      maxUnigrm <- ifelse(length(stblUnigrm[,1]) >= 15, 15, length(stblUnigrm[,1]))
+      maxUnigrm <- ifelse(length(stblUnigrm[,1]) >= 20, 20, length(stblUnigrm[,1]))
       top20unig<-stblUnigrm[1:maxUnigrm,]
       colnames(top20unig)<-c("UniGram","Frequency")
       p <- ggplot (top20unig, aes(x = reorder(UniGram, Frequency), y= Frequency )) + 
@@ -119,7 +118,7 @@ function(input, output) {
       allmessages <- toupper(file$Conteúdo)[neutras]
       
       stblUnigrm <- fromCommentsToUnigram(allmessages)
-      top20unig<-stblUnigrm[1:15,]
+      top20unig<-stblUnigrm[1:20,]
       colnames(top20unig)<-c("UniGram","Frequency")
       p <- ggplot (top20unig, aes(x = reorder(UniGram, Frequency), y= Frequency )) + 
          geom_bar( stat = "Identity" , fill = "blue" ) +  
@@ -169,7 +168,7 @@ function(input, output) {
       pal <- pal[-(1:2)]
       pal2 <- brewer.pal(8,"Dark2")
       png(file.path(resultsdir,"wordcloud.png"),width=1980,height=1280,res=300)
-      wordcloud(d$word,d$freq, scale=c(8,.3),min.freq=2,max.words=100, random.order=T, rot.per=.75, colors=pal2, vfont=c("sans serif","plain"))
+      wordcloud(d$word,d$freq, scale=c(8,.3),min.freq=2,max.words=100, random.order=F, rot.per=.75, colors=pal2, vfont=c("sans serif","plain"))
       dev.off();
       cat(paste("Criado arquivo ", file.path(resultsdir,"wordcloud.png"),sep=""),sep="\n")
 
@@ -194,6 +193,20 @@ function(input, output) {
       print(p)
       dev.off();
       cat(signif(indicesentimento,3), file = file.path(resultsdir,"indicedesentimentos.txt"),sep="\n")         
+
+      genero <- toupper(dat$Genero)
+      genero[is.na(genero)] <- "NÃO-INFORMADO"
+      numgenero <- genero[order(genero)]
+
+      mm <- table(numgenero)[1];
+      mf <- table(numgenero)[2];
+      mt <- length(numgenero);
+      ni <- mt - mm - mf;
+            
+      p <- ggplot() + geom_bar(stat="identity", aes(x = unique(sort(numgenero)),y=100/mt*as.numeric(table(numgenero))), fill = c("pink","purple","green")) + xlab("Gênero") + ylab("Número de Comentários") + coord_flip() 
+      png(file.path(resultsdir,"genero.png"),width=1980,height=1280,res=300)
+      print(p)
+      dev.off()
 
       incProgress(7/7, detail = "Badogada Perfeita (7/7)! :)")
       
@@ -265,6 +278,19 @@ function(input, output) {
 
    })
    
+   output$plotGenero <- renderPlot({
+      genero <- toupper(dat$Genero)
+      genero[is.na(genero)] <- "NÃO-INFORMADO"
+      numgenero <- genero[order(genero)]
+      
+      mm <- table(numgenero)[1];
+      mf <- table(numgenero)[2];
+      mt <- length(numgenero);
+      ni <- mt - mm - mf;
+      
+      p <- ggplot() + geom_bar(stat="identity", aes(x = unique(sort(numgenero)),y=100/mt*as.numeric(table(numgenero))), fill = c("pink","purple","green")) + xlab("Gênero") + ylab("Número de Comentários") + coord_flip() 
+      print(p)
+   })
       
    output$plotLista <- renderPlot({
       allmessages<-""

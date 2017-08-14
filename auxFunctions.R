@@ -1,8 +1,9 @@
 fromCommentsToUnigram <- function(allmessages){
    
    spSamp<- unlist(strsplit(allmessages, split=", "))
-   nonAscIDX<- grep("spSamp", iconv(spSamp, "latin1", "ASCII", sub="spSamp"))
-   ascVec<- spSamp[ - nonAscIDX]
+#   nonAscIDX<- grep("spSamp", iconv(spSamp, "latin1", "ASCII", sub="spSamp"))
+#   ascVec<- spSamp[ - nonAscIDX]
+   ascVec<- spSamp;
    ascSamp<- paste(ascVec, collapse = ", ")
    clnSamp<- gsub('[[:digit:]]+', '', ascSamp)
    clnSamp<- gsub('[[:punct:]]+', '', clnSamp)
