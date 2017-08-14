@@ -1,0 +1,11 @@
+name: BadogueSentimentos
+title: BadogueSentimentos
+account: cnsantana
+server: shinyapps.io
+appId: 204595
+bundleId: 939666
+url: https://cnsantana.shinyapps.io/BadogueSentimentos/
+when: 1502677053.97928
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: experiment_sentimental_analysis.R|secti.xlsx
