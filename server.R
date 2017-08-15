@@ -194,7 +194,7 @@ function(input, output) {
       dev.off();
       cat(signif(indicesentimento,3), file = file.path(resultsdir,"indicedesentimentos.txt"),sep="\n")         
 
-      genero <- toupper(dat$Genero)
+      genero <- toupper(file$Genero)
       genero[is.na(genero)] <- "NÃO-INFORMADO"
       numgenero <- genero[order(genero)]
 
@@ -279,7 +279,9 @@ function(input, output) {
    })
    
    output$plotGenero <- renderPlot({
-      genero <- toupper(dat$Genero)
+      filepath <- input$file$datapath
+      file <- read_xlsx(filepath)
+      genero <- toupper(file$Genero)
       genero[is.na(genero)] <- "NÃO-INFORMADO"
       numgenero <- genero[order(genero)]
       
